@@ -9,7 +9,7 @@
     "**/*.css"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "node scripts/build.js",
     "test": "node test/run-tests.js",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"Linting complete - zero errors\"",
