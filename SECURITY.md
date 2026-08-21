@@ -12,7 +12,7 @@ The Nymrel team and JalenBuilds LLC take the security of our open-source softwar
 
 If you believe you have found a security vulnerability in `a2ui-warm-paper`, please report it by emailing us at:
 
-**contact@jalenbuilds.com**
+**contact@nymrel.com**
 
 Please include:
 1. Type of issue (e.g. XSS in markdown stream parser, prototype pollution in delta patcher, unvalidated payload injection)

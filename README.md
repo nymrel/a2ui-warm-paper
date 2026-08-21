@@ -338,4 +338,4 @@ npm run typecheck
 
 ## 📄 License & Attribution
 
-Distributed under the **MIT License**. Copyright (c) 2026 **Nymrel / JalenBuilds LLC** (`contact@jalenbuilds.com`).
+Distributed under the **MIT License**. Copyright (c) 2026 **Nymrel / JalenBuilds LLC** (`contact@nymrel.com`).

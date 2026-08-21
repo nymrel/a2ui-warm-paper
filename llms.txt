@@ -6,7 +6,7 @@
 - Repository: https://github.com/nymrel/a2ui-warm-paper
 - Organization: Nymrel
 - Parent Organization: JalenBuilds LLC (https://jalenbuilds.com)
-- Contact: contact@jalenbuilds.com
+- Contact: contact@nymrel.com
 - License: MIT
 
 ## Core Philosophy: The Dual-Audience Rule
