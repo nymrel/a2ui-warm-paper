@@ -12,7 +12,8 @@
     "build": "tsc",
     "test": "node test/run-tests.js",
     "typecheck": "tsc --noEmit",
-    "lint": "echo \"Linting complete - zero errors\""
+    "lint": "echo \"Linting complete - zero errors\"",
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "a2ui",
