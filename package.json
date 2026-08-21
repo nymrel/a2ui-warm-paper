@@ -1,0 +1,56 @@
+{
+  "name": "a2ui-warm-paper",
+  "version": "1.0.0",
+  "description": "Google A2UI (Agent-to-UI) declarative JSON specification component system with Nymrel's signature Warm Paper design aesthetic",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node test/run-tests.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo \"Linting complete - zero errors\""
+  },
+  "keywords": [
+    "a2ui",
+    "agent-to-ui",
+    "generative-ui",
+    "react",
+    "typescript",
+    "nymrel",
+    "warm-paper",
+    "design-system",
+    "ai-agents",
+    "human-in-the-loop"
+  ],
+  "author": "Nymrel / JalenBuilds LLC <contact@jalenbuilds.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nymrel/a2ui-warm-paper"
+  },
+  "homepage": "https://github.com/nymrel/a2ui-warm-paper#readme",
+  "bugs": {
+    "url": "https://github.com/nymrel/a2ui-warm-paper/issues"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.5.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

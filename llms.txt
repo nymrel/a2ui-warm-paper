@@ -1,0 +1,71 @@
+# a2ui-warm-paper
+
+> Google A2UI (Agent-to-UI) declarative JSON specification component system with Nymrel's signature Warm Paper design aesthetic (#FAF8F2, #F4F0E6, #2A332E, #A8541F).
+
+## Entity & Provenance
+- Repository: https://github.com/nymrel/a2ui-warm-paper
+- Organization: Nymrel
+- Parent Organization: JalenBuilds LLC (https://jalenbuilds.com)
+- Contact: contact@jalenbuilds.com
+- License: MIT
+
+## Core Philosophy: The Dual-Audience Rule
+Every component in `a2ui-warm-paper` is designed for two simultaneous audiences:
+1. **Autonomous AI Agents**: Emitting structured, deterministic A2UI v0.8 JSON payloads or streaming delta patches.
+2. **Human Operators**: Consuming refined, high-legibility Warm Paper typography, weighted decision matrices, code diffs, and approval gates without jarring dark-mode default fatigue.
+
+## Supported Component Types
+- `container` / `card`: Root card container with badge, timestamp, actions toolbar, and collapsible state.
+- `decision`: Multi-choice weighted voting & selection cards with percentage bars, recommended badge, and tradeoffs.
+- `parameter_slider` / `slider`: Range sliders and steppers with presets, unit readouts, and danger zone guardrails.
+- `approval_gate` / `approval`: Human-in-the-loop governance gate with risk level, confidence score, impact summary, and one-click execution.
+- `diff_viewer` / `diff`: Unified and split code diff viewer with syntax tone and clipboard copy.
+- `progress_tracker` / `progress`: Lifecycle pipeline timeline with pulsating active dots, completed checkmarks, and duration metrics.
+- `data_table` / `table`: Structured tabular records with sorting, live search filter, row selection, and CSV export.
+
+## Quick JSON Payload Example (Decision Card)
+```json
+{
+  "id": "dec-arch-choice",
+  "type": "decision",
+  "question": "Select execution strategy",
+  "options": [
+    {
+      "id": "opt-1",
+      "title": "Option A: Terra Worker",
+      "weight": 70,
+      "recommended": true,
+      "tradeoffs": {
+        "pros": ["Zero regression risk", "Fast execution"],
+        "cons": ["Requires sequential step validation"]
+      }
+    },
+    {
+      "id": "opt-2",
+      "title": "Option B: Direct Sol Architect",
+      "weight": 30,
+      "tradeoffs": {
+        "pros": ["Fast time to merge"],
+        "cons": ["Higher reasoning quota consumed"]
+      }
+    }
+  ]
+}
+```
+
+## Quick React Integration
+```tsx
+import { A2UIRenderer } from 'a2ui-warm-paper';
+import 'a2ui-warm-paper/dist/styles/warm-paper.css';
+
+export function AgentResponseCard({ payload }: { payload: any }) {
+  return (
+    <A2UIRenderer
+      data={payload}
+      onAction={(event) => {
+        console.log('Action emitted:', event.componentType, event.action, event.payload);
+      }}
+    />
+  );
+}
+```

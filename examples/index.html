@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>a2ui-warm-paper Showcase · Nymrel</title>
+  <link rel="stylesheet" href="../src/styles/warm-paper.css">
+  <style>
+    body {
+      background-color: var(--a2ui-cream);
+      margin: 0;
+      padding: 2.5rem 1.5rem;
+      font-family: var(--a2ui-font-sans);
+      color: var(--a2ui-ink);
+    }
+    .wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .hero {
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--a2ui-stone-border);
+      padding-bottom: 1.5rem;
+    }
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin: 1.5rem 0 2.5rem 0;
+    }
+    .palette-card {
+      padding: 0.75rem;
+      border-radius: var(--a2ui-radius-md);
+      border: 1px solid var(--a2ui-stone-border);
+      font-size: 0.75rem;
+      font-family: var(--a2ui-font-mono);
+    }
+    .section-title {
+      font-family: var(--a2ui-font-serif);
+      font-size: 1.35rem;
+      color: var(--a2ui-cedar);
+      margin: 2.5rem 0 0.75rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="hero">
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <h1 style="font-family: var(--a2ui-font-serif); font-size: 2.25rem; color: var(--a2ui-cedar); margin: 0;">a2ui-warm-paper</h1>
+        <span class="a2ui-badge a2ui-badge-terracotta">v1.0.0</span>
+        <span class="a2ui-badge a2ui-badge-sage">A2UI v0.8 Standard</span>
+      </div>
+      <p style="color: var(--a2ui-ink-muted); font-size: 1.0625rem; margin: 0; line-height: 1.6;">
+        Google A2UI (Agent-to-UI) declarative JSON specification component system with Nymrel's signature Warm Paper design aesthetic.
+      </p>
+    </div>
+
+    <!-- Palette Overview -->
+    <h3 style="font-family: var(--a2ui-font-serif); color: var(--a2ui-cedar); margin: 0;">Signature Warm Paper Palette</h3>
+    <div class="palette-grid">
+      <div class="palette-card" style="background-color: #FAF8F2;">
+        <strong>Warm Cream</strong><br>#FAF8F2 (Canvas)
+      </div>
+      <div class="palette-card" style="background-color: #F4F0E6;">
+        <strong>Warm Paper</strong><br>#F4F0E6 (Card Surface)
+      </div>
+      <div class="palette-card" style="background-color: #2A332E; color: #FAF8F2;">
+        <strong>Cedar Green</strong><br>#2A332E (Brand Lead)
+      </div>
+      <div class="palette-card" style="background-color: #A8541F; color: #FAF8F2;">
+        <strong>Terracotta</strong><br>#A8541F (Accent)
+      </div>
+      <div class="palette-card" style="background-color: #E2DDD2;">
+        <strong>Stone Border</strong><br>#E2DDD2 (Divider)
+      </div>
+    </div>
+
+    <!-- 1. Decision Card -->
+    <h2 class="section-title">1. Decision Card (Multi-Choice Weighted Options)</h2>
+    <div class="a2ui-container">
+      <div class="a2ui-header">
+        <div class="a2ui-header-left">
+          <span class="a2ui-badge a2ui-badge-terracotta">Decision Required</span>
+          <span class="a2ui-badge a2ui-badge-muted">Confidence: 92%</span>
+        </div>
+        <span class="a2ui-timestamp">Expires: 11:59 PM</span>
+      </div>
+      <div class="a2ui-body">
+        <div class="a2ui-decision-wrapper">
+          <h4 class="a2ui-decision-question">Select Execution Strategy for Mobile Push Modernization</h4>
+          <p class="a2ui-decision-context">The campaign requires routing updates across iOS and Web notifications. 3 viable paths identified.</p>
+          <div class="a2ui-decision-options">
+            <div class="a2ui-decision-card selected recommended">
+              <div class="a2ui-decision-card-header">
+                <div class="a2ui-decision-option-title">
+                  <span>● Option A: Dedicated Terra Worker with Luna Preflights</span>
+                  <span class="a2ui-badge a2ui-badge-terracotta" style="font-size: 0.6875rem;">Recommended</span>
+                </div>
+                <span class="a2ui-weight-tag">65%</span>
+              </div>
+              <p style="margin: 0.375rem 0 0 0; font-size: 0.8125rem; color: var(--a2ui-ink-muted);">
+                Isolate changes to worker thread with deterministic validation gates.
+              </p>
+              <div class="a2ui-weight-bar-bg">
+                <div class="a2ui-weight-bar-fill" style="width: 65%;"></div>
+              </div>
+              <div class="a2ui-tradeoffs">
+                <div class="a2ui-tradeoff-col">
+                  <span class="a2ui-tradeoff-title a2ui-tradeoff-pros-title">Pros</span>
+                  <span class="a2ui-tradeoff-item">✓ Zero regression risk on main bus</span>
+                  <span class="a2ui-tradeoff-item">✓ Predictable token budget (~85k)</span>
+                </div>
+                <div class="a2ui-tradeoff-col">
+                  <span class="a2ui-tradeoff-title a2ui-tradeoff-cons-title">Tradeoffs</span>
+                  <span class="a2ui-tradeoff-item">⚠ Requires sequential step validation</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="a2ui-decision-card">
+              <div class="a2ui-decision-card-header">
+                <div class="a2ui-decision-option-title">
+                  <span>○ Option B: Direct Sol Architect Execution</span>
+                </div>
+                <span class="a2ui-weight-tag">25%</span>
+              </div>
+              <div class="a2ui-weight-bar-bg">
+                <div class="a2ui-weight-bar-fill" style="width: 25%;"></div>
+              </div>
+            </div>
+
+            <div class="a2ui-decision-card">
+              <div class="a2ui-decision-card-header">
+                <div class="a2ui-decision-option-title">
+                  <span>○ Option C: Keep Current State (Do Nothing)</span>
+                </div>
+                <span class="a2ui-weight-tag">10%</span>
+              </div>
+              <div class="a2ui-weight-bar-bg">
+                <div class="a2ui-weight-bar-fill" style="width: 10%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="a2ui-footer">
+        <button type="button" class="a2ui-btn a2ui-btn-terracotta">Confirm Decision →</button>
+      </div>
+    </div>
+
+    <!-- 2. Parameter Slider -->
+    <h2 class="section-title">2. Parameter Slider (Steppers & Range Controls)</h2>
+    <div class="a2ui-container">
+      <div class="a2ui-body">
+        <div class="a2ui-slider-card">
+          <div class="a2ui-slider-header">
+            <div>
+              <span class="a2ui-slider-label">Agent Reasoning Effort Budget</span>
+              <p style="margin: 0.125rem 0 0 0; font-size: 0.8125rem; color: var(--a2ui-ink-muted);">
+                Controls maximum reasoning token allocation per verification pass.
+              </p>
+            </div>
+            <div class="a2ui-slider-value-badge">32 k tokens</div>
+          </div>
+          <div class="a2ui-slider-control-row">
+            <button type="button" class="a2ui-slider-stepper-btn">−</button>
+            <input type="range" class="a2ui-slider-input" min="8" max="64" value="32">
+            <button type="button" class="a2ui-slider-stepper-btn">+</button>
+          </div>
+          <div class="a2ui-slider-presets">
+            <span style="font-size: 0.75rem; color: var(--a2ui-ink-subtle);">Presets:</span>
+            <button type="button" class="a2ui-preset-pill">Fast Sentinel (8k)</button>
+            <button type="button" class="a2ui-preset-pill active">Balanced Slice (32k)</button>
+            <button type="button" class="a2ui-preset-pill">Deep Architect (64k)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Approval Gate -->
+    <h2 class="section-title">3. Human-in-the-Loop Approval Gate</h2>
+    <div class="a2ui-container">
+      <div class="a2ui-header">
+        <div class="a2ui-header-left">
+          <span class="a2ui-badge a2ui-badge-cedar">Human In The Loop</span>
+          <span class="a2ui-badge a2ui-badge-terracotta">High Risk</span>
+        </div>
+        <span class="a2ui-badge a2ui-badge-muted">Model Confidence: 96%</span>
+      </div>
+      <div class="a2ui-body">
+        <div class="a2ui-approval-wrapper">
+          <h4 class="a2ui-title" style="font-size: 1.2rem;">Production Edge Worker Deployment Approval</h4>
+          <p style="color: var(--a2ui-ink-muted); font-size: 0.875rem; margin: 0.25rem 0 0 0;">
+            Agent requested authorization to deploy v2.4.0 edge routing rules to global Cloudflare CDN.
+          </p>
+          <div class="a2ui-impact-section">
+            <h5 class="a2ui-impact-title">Anticipated Impact & Side Effects</h5>
+            <ul class="a2ui-impact-list">
+              <li>Affects 100% of incoming production traffic across 310 edge data centers</li>
+              <li>Updates JSON-LD entity graph caching TTL from 3600s to 86400s</li>
+              <li>Includes automatic rollback to candidate SHA within 500ms if 5xx exceeds 0.01%</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="a2ui-footer">
+        <button type="button" class="a2ui-btn a2ui-btn-outline a2ui-btn-sm">✍ Request Edit</button>
+        <button type="button" class="a2ui-btn a2ui-btn-danger a2ui-btn-sm">✗ Reject</button>
+        <button type="button" class="a2ui-btn a2ui-btn-terracotta">✓ Approve & Execute</button>
+      </div>
+    </div>
+
+    <!-- 4. Diff Viewer -->
+    <h2 class="section-title">4. Code & Text Diff Viewer</h2>
+    <div class="a2ui-container">
+      <div class="a2ui-diff-topbar">
+        <div style="display: flex; align-items: center; gap: 0.625rem;">
+          <span class="a2ui-diff-filename">src/router/agent-bus.ts</span>
+          <span class="a2ui-badge a2ui-badge-muted" style="font-size: 0.6875rem;">typescript</span>
+          <span class="a2ui-badge a2ui-badge-sage" style="font-size: 0.6875rem;">+5</span>
+          <span class="a2ui-badge a2ui-badge-rust" style="font-size: 0.6875rem;">-2</span>
+        </div>
+        <button type="button" class="a2ui-btn a2ui-btn-secondary a2ui-btn-sm" style="padding: 0.2rem 0.5rem;">Copy</button>
+      </div>
+      <div class="a2ui-diff-container">
+        <table class="a2ui-diff-table">
+          <tbody>
+            <tr class="a2ui-diff-row a2ui-diff-unchanged">
+              <td class="a2ui-diff-gutter">1</td><td class="a2ui-diff-gutter">1</td>
+              <td class="a2ui-diff-content">export function resolveLane(req: Request): string {</td>
+            </tr>
+            <tr class="a2ui-diff-row a2ui-diff-unchanged">
+              <td class="a2ui-diff-gutter">2</td><td class="a2ui-diff-gutter">2</td>
+              <td class="a2ui-diff-content">  const laneId = req.headers.get('x-studio-lane');</td>
+            </tr>
+            <tr class="a2ui-diff-row a2ui-diff-added">
+              <td class="a2ui-diff-gutter"></td><td class="a2ui-diff-gutter">3</td>
+              <td class="a2ui-diff-content">+  const tenant = req.headers.get('x-nymrel-tenant') || 'primary';</td>
+            </tr>
+            <tr class="a2ui-diff-row a2ui-diff-removed">
+              <td class="a2ui-diff-gutter">3</td><td class="a2ui-diff-gutter"></td>
+              <td class="a2ui-diff-content">-  if (!laneId) return 'default';</td>
+            </tr>
+            <tr class="a2ui-diff-row a2ui-diff-added">
+              <td class="a2ui-diff-gutter"></td><td class="a2ui-diff-gutter">4</td>
+              <td class="a2ui-diff-content">+  if (!laneId) return `default-${tenant}`;</td>
+            </tr>
+            <tr class="a2ui-diff-row a2ui-diff-added">
+              <td class="a2ui-diff-gutter"></td><td class="a2ui-diff-gutter">5</td>
+              <td class="a2ui-diff-content">+  return `${tenant}:${laneId}`;</td>
+            </tr>
+            <tr class="a2ui-diff-row a2ui-diff-unchanged">
+              <td class="a2ui-diff-gutter">4</td><td class="a2ui-diff-gutter">6</td>
+              <td class="a2ui-diff-content">}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 5. Progress Tracker -->
+    <h2 class="section-title">5. Progress Tracker Timeline</h2>
+    <div class="a2ui-container">
+      <div class="a2ui-header">
+        <div class="a2ui-header-left">
+          <h4 class="a2ui-title">Autonomous Campaign Execution Pipeline</h4>
+          <span class="a2ui-badge a2ui-badge-cedar">75% Complete</span>
+        </div>
+      </div>
+      <div class="a2ui-body">
+        <div class="a2ui-weight-bar-bg" style="margin-bottom: 1.25rem; height: 6px;">
+          <div class="a2ui-weight-bar-fill" style="width: 75%;"></div>
+        </div>
+        <div class="a2ui-timeline">
+          <div class="a2ui-timeline-item completed">
+            <div class="a2ui-timeline-dot">✓</div>
+            <div class="a2ui-timeline-title">
+              <span>Luna Sentinel Preflight Scan</span>
+              <span class="a2ui-badge a2ui-badge-muted" style="font-size: 0.6875rem;">380ms</span>
+            </div>
+            <div class="a2ui-timeline-desc">Checked repo presence, claims, and zero foreign lock conflicts.</div>
+          </div>
+          <div class="a2ui-timeline-item completed">
+            <div class="a2ui-timeline-dot">✓</div>
+            <div class="a2ui-timeline-title">
+              <span>Terra Worker Code Generation</span>
+              <span class="a2ui-badge a2ui-badge-muted" style="font-size: 0.6875rem;">2.1s</span>
+            </div>
+            <div class="a2ui-timeline-desc">Created 8 component modules and unified CSS tokens.</div>
+          </div>
+          <div class="a2ui-timeline-item running">
+            <div class="a2ui-timeline-dot">●</div>
+            <div class="a2ui-timeline-title">
+              <span>Validation & Typecheck Ladder</span>
+              <span class="a2ui-badge a2ui-badge-amber" style="font-size: 0.6875rem;">In Progress</span>
+            </div>
+            <div class="a2ui-timeline-desc">Running TypeScript compiler and Node.js automated test suite.</div>
+          </div>
+          <div class="a2ui-timeline-item pending">
+            <div class="a2ui-timeline-dot">○</div>
+            <div class="a2ui-timeline-title">
+              <span style="opacity: 0.6;">Human-in-the-Loop Operator Gate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Data Table -->
+    <h2 class="section-title">6. Data Table</h2>
+    <div class="a2ui-container">
+      <div class="a2ui-header">
+        <div class="a2ui-header-left">
+          <div class="a2ui-title-group">
+            <h4 class="a2ui-title">Nymrel Active Agent Registry</h4>
+            <p class="a2ui-subtitle">Live status of autonomous agents across the studio portfolio</p>
+          </div>
+          <span class="a2ui-badge a2ui-badge-muted">5 Rows</span>
+        </div>
+        <button type="button" class="a2ui-btn a2ui-btn-secondary a2ui-btn-sm">Export CSV</button>
+      </div>
+      <div class="a2ui-body">
+        <div class="a2ui-table-container">
+          <table class="a2ui-data-table">
+            <thead>
+              <tr>
+                <th>Agent ID</th>
+                <th>Studio Role</th>
+                <th>Status</th>
+                <th>Model Pin</th>
+                <th style="text-align: right;">Tokens (k)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>sol-orch-1</code></td>
+                <td>Mission Owner / Architect</td>
+                <td><span class="a2ui-badge a2ui-badge-cedar">Active</span></td>
+                <td>GPT-5.6 Sol</td>
+                <td style="text-align: right; font-family: var(--a2ui-font-mono);">142</td>
+              </tr>
+              <tr>
+                <td><code>terra-impl-2</code></td>
+                <td>Component Engineer</td>
+                <td><span class="a2ui-badge a2ui-badge-terracotta">Running</span></td>
+                <td>GPT-5.6 Terra</td>
+                <td style="text-align: right; font-family: var(--a2ui-font-mono);">78</td>
+              </tr>
+              <tr>
+                <td><code>luna-sent-3</code></td>
+                <td>Verification Sentinel</td>
+                <td><span class="a2ui-badge a2ui-badge-muted">Idle</span></td>
+                <td>GPT-5.6 Luna</td>
+                <td style="text-align: right; font-family: var(--a2ui-font-mono);">12</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer style="margin-top: 4rem; border-top: 1px solid var(--a2ui-stone-border); padding-top: 1.5rem; text-align: center; color: var(--a2ui-ink-subtle); font-size: 0.8125rem;">
+      <p style="margin: 0;">
+        Built by <strong>Nymrel</strong> / <strong>JalenBuilds LLC</strong> · Licensed under MIT · Dual-Audience Machine Trust & Human Elegance
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
