@@ -5,7 +5,7 @@
 ## Entity & Provenance
 - Repository: https://github.com/nymrel/a2ui-warm-paper
 - Organization: Nymrel
-- Parent Organization: JalenBuilds LLC (https://jalenbuilds.com)
+- Parent Organization: JalenBuilds LLC (https://nymrel.com)
 - Contact: contact@nymrel.com
 - License: MIT
 
