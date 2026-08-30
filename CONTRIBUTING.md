@@ -23,17 +23,18 @@ git clone https://github.com/nymrel/a2ui-warm-paper.git
 cd a2ui-warm-paper
 
 # Install dependencies
-npm ci
+npm install --global npm@11.19.1
+npm ci --ignore-scripts
 
-# Run automated tests
-npm test
-
-# Run TypeScript typecheck
-npm run typecheck
+# Run tests, strict declarations, and the isolated packed-consumer probe
+npm run check
 ```
+
+Use Node.js 22.12+ or 24.x; `.node-version` records the default 24.20.0 runtime. The package supports React 18.3 and React 19 peers and validates development against the exact versions in `package-lock.json`.
 
 ## Pull Request Guidelines
 
-- Ensure `npm test` and `npm run typecheck` pass.
+- Ensure `npm run check` and `npm audit --audit-level=high` pass from a clean install.
 - Include unit tests for any new parser rules, component prop additions, or delta patch operators.
 - Update documentation and `llms.txt` if schema definitions are expanded.
+- Do not broaden release permissions, introduce an npm token, or bypass the packed-consumer gate. Provider setup and publication follow `docs/TRUSTED_PUBLISHING.md`.

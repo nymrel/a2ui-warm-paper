@@ -8,6 +8,7 @@
 - Legal Entity: JalenBuilds LLC
 - Contact: contact@nymrel.com
 - License: MIT
+- Registry status: Unpublished; the repository version is not evidence of an npm release
 
 ## Core Philosophy: The Dual-Audience Rule
 Every component in `a2ui-warm-paper` is designed for two simultaneous audiences:
@@ -22,6 +23,13 @@ Every component in `a2ui-warm-paper` is designed for two simultaneous audiences:
 - `diff_viewer` / `diff`: Unified and split code diff viewer with syntax tone and clipboard copy.
 - `progress_tracker` / `progress`: Lifecycle pipeline timeline with pulsating active dots, completed checkmarks, and duration metrics.
 - `data_table` / `table`: Structured tabular records with sorting, live search filter, row selection, and CSV export.
+
+## Current assurance boundary
+- The runtime validates this repository's local discriminated payload schema; upstream Google A2UI conformance is not claimed.
+- Delta paths and nested merge values reject `__proto__`, `prototype`, and `constructor` keys.
+- The release contract targets Node.js 22.12+ and 24.x, React 18.3/19 peers, React 19.2.8 development fixtures, and TypeScript 7.0.2.
+- `npm run check` verifies runtime behavior, strict declarations, and a packed CommonJS/ESM/TSX/CSS consumer.
+- First publication, npm trusted-publisher configuration, protected-environment approval, and public-artifact verification remain operator-owned external gates.
 
 ## Quick JSON Payload Example (Decision Card)
 ```json

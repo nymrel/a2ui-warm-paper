@@ -52,6 +52,33 @@ const appended = applyStreamDelta(updated, {
 });
 assert.equal(appended.steps.length, 2);
 
+for (const path of [
+  '__proto__.polluted',
+  'constructor.prototype.polluted',
+  'steps[0].__proto__',
+  '',
+]) {
+  assert.throws(
+    () => applyStreamDelta(progress, { op: 'set', path, value: true }),
+    /stream delta path|unsafe/i,
+  );
+}
+
+assert.throws(
+  () => applyStreamDelta(progress, {
+    op: 'merge',
+    path: 'steps[0]',
+    value: JSON.parse('{"__proto__":{"polluted":true}}'),
+  }),
+  /unsafe object key/i,
+);
+assert.equal({}.polluted, undefined, 'delta application must not pollute object prototypes');
+
+assert.throws(
+  () => applyStreamDelta(progress, { op: 'unknown', path: 'title', value: 'unsafe' }),
+  /unsupported stream delta operation/i,
+);
+
 assert.equal(warmPaperTokens.colors.cream, '#FAF8F2');
 assert.equal(warmPaperTokens.colors.cedar, '#2A332E');
 

@@ -80,9 +80,12 @@ This package is not published to npm yet. To evaluate the current source:
 ```bash
 git clone https://github.com/nymrel/a2ui-warm-paper.git
 cd a2ui-warm-paper
-npm ci
-npm test
+npm install --global npm@11.19.1
+npm ci --ignore-scripts
+npm run check
 ```
+
+Development and release verification target Node.js 22.12+ or 24.x (the repository default is 24.20.0) with npm 11.19.1. React 18.3 and React 19 are supported peer ranges; the repository validates against React 19.2.8 and TypeScript 7.0.2. `npm run check` covers the runtime suite, strict declarations, and an isolated packed consumer using CommonJS, ESM, TSX declarations, and the exported stylesheet.
 
 The examples below describe the package API intended for a future npm release. Once published, import the self-contained stylesheet from the exported path:
 
@@ -333,7 +336,12 @@ npm test
 
 # Run TypeScript type verification
 npm run typecheck
+
+# Run the complete package, declaration, and packed-consumer contract
+npm run check
 ```
+
+The package is still unpublished. Creating its first npm package record, configuring the GitHub trusted publisher, approving the protected release environment, and verifying the first public artifact are operator-owned provider gates; see [`docs/TRUSTED_PUBLISHING.md`](docs/TRUSTED_PUBLISHING.md).
 
 ---
 
