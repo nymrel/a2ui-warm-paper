@@ -1,6 +1,6 @@
 # Contributing to a2ui-warm-paper
 
-Thank you for your interest in contributing to `a2ui-warm-paper`! This repository is governed under the **Nymrel Open Source Collective** (a division of JalenBuilds LLC).
+Thank you for your interest in contributing to `a2ui-warm-paper`. Nymrel maintains this project; JalenBuilds LLC is retained only as the legal entity for licensing and security contact purposes.
 
 ## Design & Engineering Principles
 
@@ -13,7 +13,7 @@ Thank you for your interest in contributing to `a2ui-warm-paper`! This repositor
    - Dark mode is **NOT required** or forced.
 2. **Dual-Audience Rule**: Components must deliver stunning visual ergonomics for humans AND verifiable, deterministic JSON schemas for autonomous AI agents.
 3. **Zero Heavy Dependencies**: Avoid bloated UI libraries. All CSS is self-contained in `src/styles/warm-paper.css`.
-4. **Strict Schema Conformance**: All component payloads validate against the Google A2UI v0.8 declarative JSON schema specification.
+4. **Truthful Compatibility**: Treat the current payload model as A2UI-inspired until conformance is backed by an upstream schema fixture suite.
 
 ## Development Setup
 
@@ -23,7 +23,7 @@ git clone https://github.com/nymrel/a2ui-warm-paper.git
 cd a2ui-warm-paper
 
 # Install dependencies
-npm install
+npm ci
 
 # Run automated tests
 npm test
@@ -34,6 +34,6 @@ npm run typecheck
 
 ## Pull Request Guidelines
 
-- Ensure `npm test` and `npm run typecheck` run 100% clean.
+- Ensure `npm test` and `npm run typecheck` pass.
 - Include unit tests for any new parser rules, component prop additions, or delta patch operators.
 - Update documentation and `llms.txt` if schema definitions are expanded.

@@ -1,7 +1,7 @@
 /**
  * a2ui-warm-paper
  * 
- * Google A2UI (Agent-to-UI) declarative JSON specification component system
+ * Experimental A2UI-inspired component system
  * with Nymrel's signature Warm Paper design aesthetic (#FAF8F2, #F4F0E6, #2A332E, #A8541F).
  * 
  * Copyright (c) 2026 Nymrel / JalenBuilds LLC. MIT Licensed.

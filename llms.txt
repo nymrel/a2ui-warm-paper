@@ -1,17 +1,17 @@
 # a2ui-warm-paper
 
-> Google A2UI (Agent-to-UI) declarative JSON specification component system with Nymrel's signature Warm Paper design aesthetic (#FAF8F2, #F4F0E6, #2A332E, #A8541F).
+> Experimental, A2UI-inspired React components with Nymrel's Warm Paper design aesthetic (#FAF8F2, #F4F0E6, #2A332E, #A8541F).
 
 ## Entity & Provenance
 - Repository: https://github.com/nymrel/a2ui-warm-paper
 - Organization: Nymrel
-- Parent Organization: JalenBuilds LLC (https://nymrel.com)
+- Legal Entity: JalenBuilds LLC
 - Contact: contact@nymrel.com
 - License: MIT
 
 ## Core Philosophy: The Dual-Audience Rule
 Every component in `a2ui-warm-paper` is designed for two simultaneous audiences:
-1. **Autonomous AI Agents**: Emitting structured, deterministic A2UI v0.8 JSON payloads or streaming delta patches.
+1. **Autonomous AI Agents**: Emitting structured payloads for the repository's local runtime validator or streaming delta patches. Upstream A2UI conformance is not currently tested.
 2. **Human Operators**: Consuming refined, high-legibility Warm Paper typography, weighted decision matrices, code diffs, and approval gates without jarring dark-mode default fatigue.
 
 ## Supported Component Types
@@ -56,7 +56,7 @@ Every component in `a2ui-warm-paper` is designed for two simultaneous audiences:
 ## Quick React Integration
 ```tsx
 import { A2UIRenderer } from 'a2ui-warm-paper';
-import 'a2ui-warm-paper/dist/styles/warm-paper.css';
+import 'a2ui-warm-paper/styles/warm-paper.css';
 
 export function AgentResponseCard({ payload }: { payload: any }) {
   return (
