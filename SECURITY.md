@@ -8,7 +8,7 @@
 
 ## Reporting a Vulnerability
 
-The Nymrel team and JalenBuilds LLC take the security of our open-source software and autonomous agent systems seriously.
+Nymrel maintains this project, with JalenBuilds LLC retained as the legal entity for security contact purposes.
 
 If you believe you have found a security vulnerability in `a2ui-warm-paper`, please report it by emailing us at:
 
@@ -20,4 +20,4 @@ Please include:
 3. Any proof-of-concept code or sample A2UI payload
 4. Affected version(s)
 
-We will acknowledge receipt within 24 hours and provide a fix or remediation timeline within 72 hours.
+Please do not include secrets or sensitive production data. Response timing depends on severity and maintainer availability.

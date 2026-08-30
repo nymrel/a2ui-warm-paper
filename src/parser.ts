@@ -1,5 +1,5 @@
 /**
- * Google A2UI (Agent-to-UI) v0.8 Parser & Stream Validator
+ * A2UI-inspired payload parser and stream validator
  * 
  * Provides robust JSON parsing, schema validation, markdown block unwrapping,
  * stream delta patching, and typed component resolution.
@@ -84,7 +84,7 @@ export function isA2UIContainer(payload: A2UIPayload): payload is A2UIContainerP
 }
 
 /**
- * Validates an un-typed JavaScript object against the A2UI v0.8 schema
+ * Validates an untyped JavaScript object against this package's local payload model
  */
 export function validateA2UIPayload(data: unknown): A2UIParseResult {
   const errors: string[] = [];

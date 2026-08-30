@@ -1,19 +1,28 @@
 {
   "name": "a2ui-warm-paper",
   "version": "1.0.0",
-  "description": "Google A2UI (Agent-to-UI) declarative JSON specification component system with Nymrel's signature Warm Paper design aesthetic",
+  "description": "Experimental A2UI-inspired React component system with Nymrel's Warm Paper design aesthetic",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./styles/warm-paper.css": "./dist/styles/warm-paper.css"
+  },
+  "files": [
+    "dist"
+  ],
   "sideEffects": [
     "**/*.css"
   ],
   "scripts": {
     "build": "node scripts/build.js",
-    "test": "node test/run-tests.js",
+    "test": "npm run build && node test/run-tests.js",
     "typecheck": "tsc --noEmit",
-    "lint": "echo \"Linting complete - zero errors\"",
-    "prepublishOnly": "npm run build && npm test"
+    "prepack": "npm test && npm run typecheck"
   },
   "keywords": [
     "a2ui",
@@ -41,14 +50,12 @@
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  },
   "devDependencies": {
     "@types/node": "^20.14.9",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "typescript": "^5.5.2"
   },
   "engines": {

@@ -11,7 +11,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   test-node:
@@ -31,10 +30,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-        continue-on-error: true
 
       - name: Install dependencies
-        run: npm ci || npm install
+        run: npm ci
 
       - name: Build bundle
         run: npm run build
@@ -53,10 +51,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: NPM Security Audit
-        run: |
-          npm audit --audit-level=high || echo "::warning ::NPM audit reported potential high-severity advisories"
+        run: npm audit --audit-level=high
 
   publish-npm:
     name: Publish to npm (OIDC Provenance)
@@ -78,10 +79,13 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: npm ci || npm install
+        run: npm ci
 
-      - name: Prepublish validation (build & test)
-        run: npm run prepublishOnly
+      - name: Verify tag matches package version
+        run: test "v$(node -p \"require('./package.json').version\")" = "$GITHUB_REF_NAME"
+
+      - name: Prepack validation
+        run: npm run prepack
 
       - name: Publish package to npm with OIDC provenance
         run: npm publish --access public --provenance

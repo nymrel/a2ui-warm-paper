@@ -1,17 +1,15 @@
 # a2ui-warm-paper
 
-> **Google A2UI (Agent-to-UI) declarative JSON specification component system with Nymrel's signature Warm Paper design aesthetic.**
+> **An experimental, A2UI-inspired React component system with Nymrel's Warm Paper design aesthetic.**
 
-[![Version](https://img.shields.io/badge/version-1.0.0-2A332E.svg?style=flat-square)](https://github.com/nymrel/a2ui-warm-paper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-A8541F.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![A2UI Spec](https://img.shields.io/badge/A2UI-v0.8%20Compliant-2E5A44.svg?style=flat-square)](https://github.com/nymrel/a2ui-warm-paper)
 [![Design System](https://img.shields.io/badge/Design-Warm%20Paper-FAF8F2.svg?style=flat-square)](https://github.com/nymrel/a2ui-warm-paper)
 
 ---
 
 ## 📖 Overview
 
-**a2ui-warm-paper** is a production-grade React & TypeScript component library implementing the **Google A2UI (Agent-to-UI) declarative JSON specification**. It turns raw JSON payloads streamed by autonomous AI agents (LLMs, reasoning models, autonomous multi-agent pipelines) into rich, interactive, human-in-the-loop user interfaces.
+**a2ui-warm-paper** is an experimental React and TypeScript component library for rendering a small, locally defined set of agent-to-UI payloads. Its data model is inspired by A2UI concepts, but this repository does not currently test conformance against an upstream Google A2UI schema.
 
 Built around **Nymrel's signature Warm Paper design aesthetic**, it delivers warm, tactile, editorial typography and soft linen surfaces (`#FAF8F2`, `#F4F0E6`, `#2A332E`, `#A8541F`) designed to combat dark-mode fatigue while maintaining high-contrast clarity.
 
@@ -20,7 +18,7 @@ Built around **Nymrel's signature Warm Paper design aesthetic**, it delivers war
 ## 🏛️ The Dual-Audience Rule
 
 Every component in `a2ui-warm-paper` adheres to Nymrel's **Dual-Audience Contract**:
-1. **Machine Trust & Determinism**: Every card is backed by a strict, validated JSON schema (A2UI v0.8) and supports stream deltas (`set`, `append`, `merge`, `delete`) with JSON-LD entity provenance (`Nymrel -> JalenBuilds LLC`).
+1. **Machine Readability**: Supported cards use local TypeScript types and runtime checks, and accept stream deltas (`set`, `append`, `merge`, `delete`).
 2. **Exquisite Human Ergonomics**: Rich editorial typography, weighted choice matrices with percentage bars, clear pros/cons tradeoffs, risk-rated approval gates, and readable syntax-toned diff viewers.
 
 ```
@@ -28,7 +26,7 @@ Every component in `a2ui-warm-paper` adheres to Nymrel's **Dual-Audience Contrac
 │                    AUTONOMOUS AI AGENT                      │
 │             (GPT-5.6 / Claude / Gemini / Grok)              │
 └──────────────────────────────┬──────────────────────────────┘
-                               │ Streams A2UI v0.8 JSON / Deltas
+                               │ Streams local JSON payloads / deltas
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                      A2UI PARSER ENGINE                     │
@@ -77,16 +75,19 @@ Every component in `a2ui-warm-paper` adheres to Nymrel's **Dual-Audience Contrac
 
 ## 📦 Installation
 
+This package is not published to npm yet. To evaluate the current source:
+
 ```bash
-npm install a2ui-warm-paper react react-dom
+git clone https://github.com/nymrel/a2ui-warm-paper.git
+cd a2ui-warm-paper
+npm ci
+npm test
 ```
 
-Import the self-contained stylesheet in your root entrypoint:
+The examples below describe the package API intended for a future npm release. Once published, import the self-contained stylesheet from the exported path:
 
 ```tsx
-import 'a2ui-warm-paper/dist/styles/warm-paper.css';
-// Or if importing from source:
-import 'a2ui-warm-paper/src/styles/warm-paper.css';
+import 'a2ui-warm-paper/styles/warm-paper.css';
 ```
 
 ---
@@ -100,7 +101,7 @@ Pass any valid A2UI JSON payload (or JSON string) to `A2UIRenderer`:
 ```tsx
 import React from 'react';
 import { A2UIRenderer, A2UIActionEvent } from 'a2ui-warm-paper';
-import 'a2ui-warm-paper/src/styles/warm-paper.css';
+import 'a2ui-warm-paper/styles/warm-paper.css';
 
 const samplePayload = {
   id: "dec-model-routing",
@@ -324,10 +325,10 @@ export function LiveAgentStreamView({ sseEndpoint }: { sseEndpoint: string }) {
 
 ## 🧪 Testing
 
-The repository features an automated unit test suite built with Node.js built-in test assertions, requiring zero external binaries:
+The test command compiles the package, imports the generated `dist` entrypoint, and exercises parser validation and stream-delta behavior with Node.js assertions:
 
 ```bash
-# Run unit tests
+# Build and run package smoke tests
 npm test
 
 # Run TypeScript type verification
