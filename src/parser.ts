@@ -235,30 +235,74 @@ export function parseA2UI(rawText: string): A2UIParseResult {
   }
 }
 
+const UNSAFE_DELTA_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
+
+function parseDeltaPath(path: string): Array<string | number> {
+  if (typeof path !== 'string' || path.trim() === '') {
+    throw new Error('Stream delta path must be a non-empty string.');
+  }
+
+  const parts: Array<string | number> = [];
+  for (const segment of path.split('.')) {
+    const match = /^([A-Za-z_$][A-Za-z0-9_$]*)(?:\[(\d+)\])?$/.exec(segment);
+    if (!match?.[1]) {
+      throw new Error(`Invalid stream delta path segment: '${segment}'.`);
+    }
+    if (UNSAFE_DELTA_KEYS.has(match[1])) {
+      throw new Error(`Unsafe stream delta path segment: '${match[1]}'.`);
+    }
+    parts.push(match[1]);
+    if (match[2] !== undefined) {
+      const index = Number(match[2]);
+      if (!Number.isSafeInteger(index)) {
+        throw new Error(`Invalid stream delta array index: '${match[2]}'.`);
+      }
+      parts.push(index);
+    }
+  }
+  return parts;
+}
+
+function containsUnsafeDeltaKey(value: unknown, seen = new WeakSet<object>()): boolean {
+  if (!value || typeof value !== 'object') return false;
+  if (seen.has(value)) return false;
+  seen.add(value);
+
+  for (const key of Object.keys(value)) {
+    if (UNSAFE_DELTA_KEYS.has(key)) return true;
+    if (containsUnsafeDeltaKey((value as Record<string, unknown>)[key], seen)) return true;
+  }
+  return false;
+}
+
 /**
  * Applies a stream delta / mutation patch to an existing A2UI payload
  */
 export function applyStreamDelta<T extends A2UIPayload>(base: T, delta: A2UIStreamDelta): T {
   const clone = JSON.parse(JSON.stringify(base)) as Record<string, unknown>;
-  const pathParts = delta.path.split('.').map((p) => {
-    // Check for array indexing like steps[0]
-    const match = p.match(/(\w+)\[(\d+)\]/);
-    if (match && match[1] && match[2]) {
-      return [match[1], parseInt(match[2], 10)];
-    }
-    return [p];
-  }).flat();
+  const pathParts = parseDeltaPath(delta.path);
+  if (delta.op !== 'delete' && containsUnsafeDeltaKey(delta.value)) {
+    throw new Error('Stream delta value contains an unsafe object key.');
+  }
 
   let curr: any = clone;
   for (let i = 0; i < pathParts.length - 1; i++) {
     const key = pathParts[i]!;
+    if (!curr || typeof curr !== 'object') {
+      throw new Error(`Stream delta path cannot traverse '${String(key)}'.`);
+    }
     if (curr[key] === undefined) {
       curr[key] = typeof pathParts[i + 1] === 'number' ? [] : {};
+    } else if (!curr[key] || typeof curr[key] !== 'object') {
+      throw new Error(`Stream delta path cannot traverse '${String(key)}'.`);
     }
     curr = curr[key];
   }
 
   const lastKey = pathParts[pathParts.length - 1]!;
+  if (!curr || typeof curr !== 'object') {
+    throw new Error(`Stream delta path cannot write '${String(lastKey)}'.`);
+  }
 
   switch (delta.op) {
     case 'set':
@@ -285,6 +329,8 @@ export function applyStreamDelta<T extends A2UIPayload>(base: T, delta: A2UIStre
         delete curr[lastKey];
       }
       break;
+    default:
+      throw new Error(`Unsupported stream delta operation: '${String(delta.op)}'.`);
   }
 
   return clone as T;
