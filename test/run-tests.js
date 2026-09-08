@@ -25,6 +25,24 @@ assert.equal(
 
 assert.deepEqual(parseA2UI(JSON.stringify(decision)).payload, decision);
 assert.equal(validateA2UIPayload(decision).valid, true);
+// Exercise the shipped parser for every remaining component and public alias.
+// The historical suite copied parser logic into its test file instead.
+for (const [types, fields, required] of [
+  [['approval_gate', 'approval'], { title: 'Release review', impactSummary: ['Update UI'], riskLevel: 'high' }, 'impactSummary'],
+  [['parameter_slider', 'slider'], { label: 'Temperature', min: 0, max: 2, value: 0.7 }, 'value'],
+  [['diff_viewer', 'diff'], { originalContent: 'before', modifiedContent: 'after' }, 'modifiedContent'],
+  [['progress_tracker', 'progress'], { title: 'Build', steps: [{ id: 'build', title: 'Build', status: 'pending' }] }, 'steps'],
+  [['data_table', 'table'], { columns: [{ key: 'id', header: 'ID' }], rows: [{ id: 'one' }] }, 'rows'],
+  [['container', 'card'], { title: 'Summary' }, 'title'],
+]) {
+  for (const type of types) {
+    const payload = { id: `fixture-${type}`, type, ...fields };
+    assert.deepEqual(parseA2UI(JSON.stringify(payload)).payload, payload, `${type} must parse from JSON`);
+    const invalid = { ...payload };
+    delete invalid[required];
+    assert.equal(validateA2UIPayload(invalid).valid, false, `${type} must reject missing ${required}`);
+  }
+}
 assert.equal(
   validateA2UIPayload({ id: 'invalid', type: 'decision', question: 'Missing options' }).valid,
   false,
