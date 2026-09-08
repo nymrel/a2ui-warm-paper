@@ -1,19 +1,35 @@
 {
   "name": "a2ui-warm-paper",
   "version": "1.0.0",
-  "description": "Google A2UI (Agent-to-UI) declarative JSON specification component system with Nymrel's signature Warm Paper design aesthetic",
+  "description": "Experimental A2UI-inspired React component system with Nymrel's Warm Paper design aesthetic",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./styles/warm-paper.css": {
+      "types": "./dist/styles/warm-paper.css.d.ts",
+      "default": "./dist/styles/warm-paper.css"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "sideEffects": [
     "**/*.css"
   ],
   "scripts": {
     "build": "node scripts/build.js",
-    "test": "node test/run-tests.js",
+    "check": "npm test && npm run typecheck && npm run verify:consumer",
+    "prepublishOnly": "npm run check",
+    "test": "npm run build && node test/run-tests.js",
     "typecheck": "tsc --noEmit",
-    "lint": "echo \"Linting complete - zero errors\"",
-    "prepublishOnly": "npm run build && npm test"
+    "prepack": "npm test && npm run typecheck",
+    "verify:consumer": "node scripts/verify-packed-consumer.mjs"
   },
   "keywords": [
     "a2ui",
@@ -38,20 +54,23 @@
     "url": "https://github.com/nymrel/a2ui-warm-paper/issues"
   },
   "peerDependencies": {
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0"
-  },
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": ">=18.3.0 <20",
+    "react-dom": ">=18.3.0 <20"
   },
   "devDependencies": {
-    "@types/node": "^20.14.9",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "typescript": "^5.5.2"
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "typescript": "7.0.2"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.12.0 <25",
+    "npm": ">=10.9.0 <12"
+  },
+  "packageManager": "npm@11.19.1",
+  "publishConfig": {
+    "access": "public"
   }
 }

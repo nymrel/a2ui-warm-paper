@@ -1,90 +1,110 @@
-name: Release & Publish (npm)
+name: Quality and Trusted Publish
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
-    branches: [main, master]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test-node:
-    name: Test Node.js (${{ matrix.node-version }})
-    runs-on: ubuntu-latest
+  quality:
+    name: Quality (${{ matrix.os }}, Node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-
+        os: [ubuntu-latest, windows-latest]
+        node: [22.12.0, 24.20.0]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-        continue-on-error: true
+          persist-credentials: false
 
-      - name: Install dependencies
-        run: npm ci || npm install
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: ${{ matrix.node }}
+          package-manager-cache: false
 
-      - name: Build bundle
-        run: npm run build
+      - name: Pin the repository npm toolchain
+        run: npm install --global npm@11.19.1 # zizmor: ignore[adhoc-packages]
 
-      - name: Run Node.js test suite
-        run: npm test
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts
 
-  security-audit:
-    name: Security & DevSecOps Audit
+      - name: Run the package and packed-consumer contract
+        run: npm run check
+
+      - name: Audit production dependencies
+        run: npm audit --audit-level=high
+
+  workflow-security:
+    name: Workflow security
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 20.x
-        uses: actions/setup-node@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 20.x
+          persist-credentials: false
 
-      - name: NPM Security Audit
-        run: |
-          npm audit --audit-level=high || echo "::warning ::NPM audit reported potential high-severity advisories"
+      - name: Scan workflow definitions with zizmor
+        uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
 
-  publish-npm:
-    name: Publish to npm (OIDC Provenance)
-    needs: [test-node, security-audit]
-    if: startsWith(github.ref, 'refs/tags/v')
+  publish:
+    name: Publish trusted npm artifact
+    needs: [quality, workflow-security]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: npm-publish
     permissions:
       contents: read
       id-token: write
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 20.x
-        uses: actions/setup-node@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 20.x
-          registry-url: 'https://registry.npmjs.org'
+          persist-credentials: false
 
-      - name: Install dependencies
-        run: npm ci || npm install
+      - name: Set up Node.js without a dependency cache
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24.20.0
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
 
-      - name: Prepublish validation (build & test)
-        run: npm run prepublishOnly
+      - name: Pin the trusted-publishing npm toolchain
+        run: npm install --global npm@11.19.1 # zizmor: ignore[adhoc-packages]
 
-      - name: Publish package to npm with OIDC provenance
-        run: npm publish --access public --provenance
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts
+
+      - name: Verify the release tag matches package.json
+        shell: bash
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          expected="v$(node -p "require('./package.json').version")"
+          test "$RELEASE_TAG" = "$expected"
+
+      - name: Re-run the complete release contract
+        run: npm run check
+
+      - name: Publish through npm trusted publishing
+        run: npm publish

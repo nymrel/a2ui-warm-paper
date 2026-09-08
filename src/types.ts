@@ -1,5 +1,5 @@
 /**
- * Google A2UI (Agent-to-UI) v0.8 Declarative Specification Types
+ * Local A2UI-inspired declarative payload types
  * Tailored for Nymrel's signature Warm Paper component ecosystem.
  */
 
