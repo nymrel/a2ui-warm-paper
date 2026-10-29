@@ -1,0 +1,26 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'com.nymrel.inboxextractor'
+version = '0.1.0'
+
+android {
+  namespace 'com.nymrel.inboxextractor'
+  // AGP 9 only creates unit tests for the selected tested build type.
+  testBuildType 'release'
+  defaultConfig {
+    versionCode 1
+    versionName '0.1.0'
+    consumerProguardFiles 'consumer-rules.pro'
+  }
+}
+
+dependencies {
+  // Bundled Latin model: extraction does not request a model download.
+  implementation 'com.google.mlkit:text-recognition:16.0.1'
+  implementation 'com.alphacephei:vosk-android:0.3.75@aar'
+  implementation 'net.java.dev.jna:jna:5.18.1@aar'
+  testImplementation 'junit:junit:4.13.2'
+}

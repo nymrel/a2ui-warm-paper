@@ -1,0 +1,84 @@
+name: Nymrel Inbox native verification
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['examples/nymrel-inbox/**', '.github/workflows/inbox-native.yml']
+  push:
+    branches: [main]
+    paths: ['examples/nymrel-inbox/**', '.github/workflows/inbox-native.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inbox-native-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: examples/nymrel-inbox
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24.20.0
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: npm audit --audit-level=high
+      - run: npx expo export --platform ios --platform android --output-dir dist-native
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24.20.0
+          package-manager-cache: false
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: npm ci --ignore-scripts
+      - run: npm run prepare:speech-model
+      - run: npx expo prebuild --platform android --no-install
+      - run: bash android/gradlew -p android :app:assembleRelease :nymrel-inbox-extractor:testReleaseUnitTest --no-daemon
+      - name: Verify release has no network permission
+        run: node scripts/verify-android-manifest.mjs
+      - name: Verify bundled model and 16 KiB native alignment
+        run: python3 scripts/verify-android-artifact.py
+      - name: Retain review build with development signing
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        with:
+          name: nymrel-inbox-android-review
+          path: examples/nymrel-inbox/android/app/build/outputs/apk/release/*.apk
+          retention-days: 7
+          if-no-files-found: error
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24.20.0
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts
+      - run: npx expo prebuild --platform ios --no-install
+      - run: pod install --project-directory=ios
+      - name: Compile simulator app and share extension without signing
+        run: xcodebuild -workspace ios/NymrelInbox.xcworkspace -scheme NymrelInbox -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' ARCHS=arm64 ONLY_ACTIVE_ARCH=YES CODE_SIGNING_ALLOWED=NO build

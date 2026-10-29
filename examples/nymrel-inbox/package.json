@@ -1,0 +1,59 @@
+{
+  "name": "@nymrel/inbox",
+  "description": "Private on-device capture and source-linked search for iOS and Android",
+  "license": "MIT",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nymrel/a2ui-warm-paper.git",
+    "directory": "examples/nymrel-inbox"
+  },
+  "main": "index.ts",
+  "dependencies": {
+    "@noble/ciphers": "2.4.0",
+    "@noble/hashes": "2.4.0",
+    "@scure/base": "2.2.0",
+    "expo": "58.0.21",
+    "expo-asset": "~58.0.19",
+    "expo-audio": "~58.0.10",
+    "expo-build-properties": "~58.0.11",
+    "expo-crypto": "~58.0.7",
+    "expo-document-picker": "~58.0.4",
+    "expo-file-system": "~58.0.13",
+    "expo-image-picker": "~58.0.10",
+    "expo-linking": "~58.0.15",
+    "expo-secure-store": "~58.0.2",
+    "expo-sharing": "~58.0.21",
+    "expo-sqlite": "~58.0.14",
+    "expo-status-bar": "~58.0.4",
+    "expo-system-ui": "~58.0.7",
+    "react": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-safe-area-context": "~5.10.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "@types/react": "~19.3.0",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "npm run prepare:speech-model && expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "test": "node --experimental-strip-types --test src/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test && node --test modules/inbox-extractor/*.test.cjs",
+    "prebuild": "npm run prepare:speech-model && expo prebuild --no-install",
+    "export": "expo export --platform ios --platform android --output-dir dist-native",
+    "prepare:speech-model": "node scripts/prepare-speech-model.mjs"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.20.0 <25"
+  },
+  "overrides": {
+    "zod": "4.6.7"
+  }
+}

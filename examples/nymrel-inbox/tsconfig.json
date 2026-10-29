@@ -1,0 +1,18 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "types": [
+      "node",
+      "react"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "android",
+    "ios",
+    "dist-native"
+  ]
+}
