@@ -238,13 +238,29 @@ function checkLocalUri(uri: string) {
       "Import an original from the device file picker or share sheet. Network file URLs are not fetched.",
     );
 }
+function isCacheFile(uri: string): boolean {
+  if (!FS.cacheDirectory) return false;
+  try {
+    const file = new URL(decodeURIComponent(uri));
+    const cache = new URL(decodeURIComponent(FS.cacheDirectory));
+    return (
+      file.protocol === "file:" &&
+      !file.host &&
+      !file.search &&
+      !file.hash &&
+      file.href.startsWith(
+        cache.href.endsWith("/") ? cache.href : cache.href + "/",
+      )
+    );
+  } catch {
+    return false;
+  }
+}
+export async function cleanupPickerCopy(uri: string): Promise<void> {
+  if (isCacheFile(uri)) await FS.deleteAsync(uri, { idempotent: true });
+}
 export async function discardTemporaryFile(uri: string): Promise<void> {
-  if (
-    !FS.cacheDirectory ||
-    !uri.startsWith(FS.cacheDirectory) ||
-    uri.includes("..") ||
-    !uri.startsWith("file://")
-  )
+  if (!isCacheFile(uri))
     throw new Error("Only temporary files in this app cache can be discarded.");
   await FS.deleteAsync(uri, { idempotent: true });
 }
@@ -629,6 +645,13 @@ export function processSharedItems() {
               name: value.split("/").pop() || "Shared original",
               mimeType: payload.mimeType || "application/octet-stream",
             });
+          if (!["url", "text"].includes(type)) {
+            await cleanupPickerCopy(value).catch(() =>
+              warnings.push(
+                "An imported shared-file cache copy could not be removed.",
+              ),
+            );
+          }
           if (!result.duplicate) added++;
           if (
             "warning" in result &&

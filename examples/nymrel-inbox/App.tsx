@@ -37,6 +37,7 @@ import { relatedItems, searchItems, suggestTags } from "./src/core";
 import type { Item, Kind, SearchMatch } from "./src/core";
 import {
   captureFile,
+  cleanupPickerCopy,
   discardTemporaryFile,
   exportBackup,
   getCapabilities,
@@ -442,20 +443,47 @@ function Inbox() {
       });
       if (picked.canceled) return;
       const file = picked.assets[0];
-      const result = await captureFile({
-        uri: file.uri,
-        name: file.name,
-        mimeType: file.mimeType || "application/octet-stream",
-        size: file.size,
-      });
+      let result: Awaited<ReturnType<typeof captureFile>> | null = null;
+      let captureFailed = false;
+      let captureError: unknown;
+      let cleanupWarning = "";
+      try {
+        result = await captureFile({
+          uri: file.uri,
+          name: file.name,
+          mimeType: file.mimeType || "application/octet-stream",
+          size: file.size,
+        });
+      } catch (error) {
+        captureFailed = true;
+        captureError = error;
+      } finally {
+        await cleanupPickerCopy(file.uri).catch(() => {
+          cleanupWarning =
+            "A temporary picker copy could not be removed from this app’s cache.";
+        });
+      }
+      if (captureFailed)
+        throw new Error(
+          [messageOf(captureError), cleanupWarning].filter(Boolean).join(" "),
+        );
+      if (!result)
+        throw new Error(
+          "The file could not be saved. Choose it again to retry.",
+        );
       setSelectedId(result.item.id);
       setTab("library");
       tell(
-        result.warning ||
-          (result.duplicate
+        [
+          result.duplicate
             ? "That original is already saved. Opened the existing capture."
-            : "Original saved and ready to search."),
-        Boolean(result.warning),
+            : "Original saved on this device.",
+          result.warning,
+          cleanupWarning,
+        ]
+          .filter(Boolean)
+          .join(" "),
+        Boolean(result.warning || cleanupWarning),
       );
     });
   const importImage = () =>
@@ -467,20 +495,47 @@ function Inbox() {
       });
       if (picked.canceled) return;
       const image = picked.assets[0];
-      const result = await captureFile({
-        uri: image.uri,
-        name: image.fileName || `image-${Date.now()}.jpg`,
-        mimeType: image.mimeType || "image/jpeg",
-        size: image.fileSize,
-      });
+      let result: Awaited<ReturnType<typeof captureFile>> | null = null;
+      let captureFailed = false;
+      let captureError: unknown;
+      let cleanupWarning = "";
+      try {
+        result = await captureFile({
+          uri: image.uri,
+          name: image.fileName || `image-${Date.now()}.jpg`,
+          mimeType: image.mimeType || "image/jpeg",
+          size: image.fileSize,
+        });
+      } catch (error) {
+        captureFailed = true;
+        captureError = error;
+      } finally {
+        await cleanupPickerCopy(image.uri).catch(() => {
+          cleanupWarning =
+            "A temporary picker copy could not be removed from this app’s cache.";
+        });
+      }
+      if (captureFailed)
+        throw new Error(
+          [messageOf(captureError), cleanupWarning].filter(Boolean).join(" "),
+        );
+      if (!result)
+        throw new Error(
+          "The image could not be saved. Choose it again to retry.",
+        );
       setSelectedId(result.item.id);
       setTab("library");
       tell(
-        result.warning ||
-          (result.duplicate
+        [
+          result.duplicate
             ? "That image is already saved."
-            : "Image saved on this device."),
-        Boolean(result.warning),
+            : "Image saved on this device.",
+          result.warning,
+          cleanupWarning,
+        ]
+          .filter(Boolean)
+          .join(" "),
+        Boolean(result.warning || cleanupWarning),
       );
     });
   const startVoice = () =>

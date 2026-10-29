@@ -56,6 +56,51 @@ test("SQLCipher capability guard refuses a plaintext-capable build (mocked nativ
   assert.equal(mock.closeCount, 1);
   assert.equal(filesAt("file:///docs/inbox-v1/").length, 0);
 });
+test("picker cleanup removes only canonical files within this app cache", async () => {
+  const app = await service();
+  const cached = "file:///cache/DocumentPicker/receipt.png";
+  const original = "file:///docs/original-receipt.png";
+  mock.put(cached, sourceBytes);
+  mock.put(original, sourceBytes);
+  await app.cleanupPickerCopy(cached);
+  assert.ok(!mock.files.has(cached));
+  await app.cleanupPickerCopy(original);
+  assert.deepEqual(mock.get(original), sourceBytes);
+  await assert.rejects(
+    () => app.discardTemporaryFile(original),
+    /Only temporary/,
+  );
+  const normalizedInside = "file:///cache/recordings/../voice.m4a";
+  mock.put(normalizedInside, sourceBytes);
+  await app.discardTemporaryFile(normalizedInside);
+  assert.ok(!mock.files.has(normalizedInside));
+});
+test("temporary cleanup rejects external, sibling, and encoded traversal URIs", async () => {
+  const app = await service();
+  for (const uri of [
+    "file:///cache/../docs/private.png",
+    "file:///cache/%2e%2e/docs/private.png",
+    "file:///cache/%252e%252e/docs/private.png",
+    "file:///cache/%2E%2E%2Fdocs/private.png",
+    "file:///cache-elsewhere/private.png",
+    "file://other-host/cache/private.png",
+    "file:///cache/private.png?outside=1",
+    "file:///cache/private.png#outside",
+    "content://cache/private.png",
+    "https://example.com/cache/private.png",
+    "file:///cache/%ZZ/private.png",
+  ]) {
+    mock.put(uri, sourceBytes);
+    await app.cleanupPickerCopy(uri);
+    assert.deepEqual(mock.get(uri), sourceBytes, uri);
+    await assert.rejects(
+      () => app.discardTemporaryFile(uri),
+      /Only temporary/,
+      uri,
+    );
+    assert.deepEqual(mock.get(uri), sourceBytes, uri);
+  }
+});
 test("existing vault with a missing device key is preserved instead of reset", async () => {
   const app = await service();
   mock.put("file:///db/nymrel-inbox-v1.db", "existing encrypted database");

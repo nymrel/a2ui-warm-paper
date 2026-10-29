@@ -57,7 +57,7 @@ jobs:
       - run: bash android/gradlew -p android :app:assembleRelease --no-daemon
       - name: Verify release has no network permission
         run: node scripts/verify-android-manifest.mjs
-      - name: Retain unsigned review build
+      - name: Retain review build with development signing
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         with:
           name: nymrel-inbox-android-review
