@@ -15,6 +15,24 @@ Built around **Nymrel's signature Warm Paper design aesthetic**, it delivers war
 
 ---
 
+## Open Desk: three original productivity tools
+
+[Open Desk](examples/open-desk/README.md) is a standalone MIT-licensed example
+with a bookmark library, task board, and focus timer. It studies public workflows
+from Raindrop.io, Todoist, and Pomofocus using original code and Nymrel styling.
+It runs without package installation, a backend, or an account, and includes
+offline caching, portable validated backups, link deduplication, and a timer
+that recovers after tab suspension. It demonstrates Warm Paper visual principles
+without depending on the React component package.
+
+```sh
+cd examples/open-desk
+npm start
+# Open http://127.0.0.1:4178
+```
+
+This is a source release. It is not a hosted service or mobile-store release.
+
 ## 🏛️ The Dual-Audience Rule
 
 Every component in `a2ui-warm-paper` adheres to Nymrel's **Dual-Audience Contract**:

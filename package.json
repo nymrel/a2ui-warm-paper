@@ -24,12 +24,13 @@
   ],
   "scripts": {
     "build": "node scripts/build.js",
-    "check": "npm test && npm run typecheck && npm run verify:consumer",
+    "check": "npm test && npm run test:open-desk && npm run typecheck && npm run verify:consumer",
     "prepublishOnly": "npm run check",
     "test": "npm run build && node test/run-tests.js",
     "typecheck": "tsc --noEmit",
     "prepack": "npm test && npm run typecheck",
-    "verify:consumer": "node scripts/verify-packed-consumer.mjs"
+    "verify:consumer": "node scripts/verify-packed-consumer.mjs",
+    "test:open-desk": "node --test examples/open-desk/core.test.mjs examples/open-desk/offline.test.mjs"
   },
   "keywords": [
     "a2ui",

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#2A332E" />
+    <meta
+      name="description"
+      content="A quiet workspace for your links, tasks, and focus. Free, open source, and stored on your device."
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Open Desk · Nymrel</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.mjs"></script>
+  </head>
+  <body>
+    <a class="skip" href="#workspace">Skip to workspace</a>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="./" aria-label="Open Desk home"
+          ><span class="brand-mark" aria-hidden="true">o<span>d</span></span
+          ><span>Open Desk<small>BY NYMREL</small></span></a
+        >
+        <p class="sidebar-caption">A little room to think.</p>
+        <nav aria-label="Workspaces">
+          <button type="button" data-view="bookmarks" aria-pressed="true">
+            <span aria-hidden="true">↗</span> Library
+            <span id="bookmark-count" class="count">0</span>
+          </button>
+          <button type="button" data-view="tasks" aria-pressed="false">
+            <span aria-hidden="true">☷</span> Tasks
+            <span id="task-count" class="count">0</span>
+          </button>
+          <button type="button" data-view="focus" aria-pressed="false">
+            <span aria-hidden="true">◷</span> Focus
+          </button>
+        </nav>
+        <div class="device-note">
+          <span class="dot" aria-hidden="true"></span
+          ><strong>Your device. Your space.</strong>
+          <p>
+            No account, trackers, or cloud sync. Export a backup to keep a
+            second copy.
+          </p>
+        </div>
+        <div class="backup-actions">
+          <button id="export" type="button">Export backup ↓</button
+          ><button id="import-trigger" type="button">Import backup ↑</button
+          ><input
+            id="import"
+            type="file"
+            accept="application/json,.json"
+            hidden
+          />
+        </div>
+        <a
+          class="source-link"
+          href="https://github.com/nymrel/a2ui-warm-paper/tree/main/examples/open-desk"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Open source · MIT ↗</a
+        >
+      </aside>
+      <main id="workspace" tabindex="-1">
+        <header class="topbar">
+          <span class="eyebrow">LESS FRICTION. MORE FLOW.</span
+          ><span id="save-status">Saved on this device</span>
+        </header>
+        <div id="storage-warning" class="warning" hidden>
+          <p id="storage-message"></p>
+          <button id="reload" type="button" hidden>
+            Load latest saved version</button
+          ><button id="recovery" type="button" hidden>
+            Download recovery data</button
+          ><button id="fresh-start" type="button" hidden>
+            Start a new workspace
+          </button>
+        </div>
+        <div id="message" role="status" aria-live="polite"></div>
+        <section id="bookmarks-view" aria-labelledby="library-title">
+          <div class="heading">
+            <div>
+              <p class="eyebrow">COLLECT WHAT MATTERS</p>
+              <h1 id="library-title">Your library.</h1>
+              <p>Good ideas deserve a place to land.</p>
+            </div>
+            <span class="section-index" aria-hidden="true">01 /</span>
+          </div>
+          <form id="bookmark-form" class="capture">
+            <h2>Save something good</h2>
+            <div class="form-grid">
+              <label
+                >Link<input
+                  id="bookmark-url"
+                  type="url"
+                  placeholder="https://example.com/idea"
+                  required
+                  maxlength="4096"
+                  autocomplete="url" /></label
+              ><label
+                >Title<input
+                  id="bookmark-title"
+                  placeholder="What caught your eye?"
+                  maxlength="240"
+                  required
+              /></label>
+            </div>
+            <div class="form-grid">
+              <label
+                >Tags <span class="optional">comma separated</span
+                ><input
+                  id="bookmark-tags"
+                  placeholder="design, reading, inspiration"
+                  maxlength="1000" /></label
+              ><label
+                >Note <span class="optional">optional</span
+                ><input
+                  id="bookmark-notes"
+                  placeholder="Something worth remembering"
+                  maxlength="10000"
+              /></label>
+            </div>
+            <div class="form-footer">
+              <span>Common trackers removed; signed links kept intact.</span
+              ><button class="primary" type="submit">
+                Save link <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </form>
+          <div class="list-toolbar">
+            <h2>Saved links <span id="library-total" class="quiet"></span></h2>
+            <label class="search"
+              ><span class="sr-only">Search library</span
+              ><input
+                id="bookmark-search"
+                type="search"
+                placeholder="Search titles, tags, notes…"
+                maxlength="500"
+              /><kbd aria-hidden="true">/</kbd></label
+            >
+          </div>
+          <div id="bookmark-list" class="bookmark-grid"></div>
+        </section>
+        <section id="tasks-view" aria-labelledby="tasks-title" hidden>
+          <div class="heading">
+            <div>
+              <p class="eyebrow">MAKE ROOM FOR PROGRESS</p>
+              <h1 id="tasks-title">One thing at a time.</h1>
+              <p>A simple board for what comes next.</p>
+            </div>
+            <span class="section-index" aria-hidden="true">02 /</span>
+          </div>
+          <form id="task-form" class="capture">
+            <h2>Add a task</h2>
+            <label
+              >Task<input
+                id="task-title"
+                placeholder="What would make today a good day?"
+                required
+                maxlength="240"
+            /></label>
+            <div class="form-grid">
+              <label
+                >Due date <span class="optional">optional</span
+                ><input id="task-due" type="date" /></label
+              ><label
+                >Priority<select id="task-priority">
+                  <option value="normal">Normal</option>
+                  <option value="high">High</option>
+                  <option value="low">Low</option>
+                </select></label
+              >
+            </div>
+            <div class="form-footer">
+              <span>Move tasks with the status menu. No dragging required.</span
+              ><button class="primary" type="submit">Add task +</button>
+            </div>
+          </form>
+          <div class="list-toolbar">
+            <h2>Your board</h2>
+            <label class="search"
+              ><span class="sr-only">Search tasks</span
+              ><input
+                id="task-search"
+                type="search"
+                placeholder="Find a task…"
+                maxlength="500"
+              /><kbd aria-hidden="true">/</kbd></label
+            >
+          </div>
+          <div id="task-board" class="board"></div>
+        </section>
+        <section id="focus-view" aria-labelledby="focus-title" hidden>
+          <div class="heading">
+            <div>
+              <p class="eyebrow">GIVE YOUR ATTENTION A HOME</p>
+              <h1 id="focus-title">Settle into focus.</h1>
+              <p>Choose a task. Find your rhythm.</p>
+            </div>
+            <span class="section-index" aria-hidden="true">03 /</span>
+          </div>
+          <div class="focus-layout">
+            <div class="timer-card">
+              <p id="timer-label" class="eyebrow">A FRESH START</p>
+              <div
+                id="timer-display"
+                class="timer"
+                role="timer"
+                aria-label="Time remaining"
+                aria-live="off"
+              >
+                25:00
+              </div>
+              <label
+                >Session length<select id="focus-duration">
+                  <option value="15">15 minutes</option>
+                  <option value="25" selected>25 minutes</option>
+                  <option value="45">45 minutes</option>
+                  <option value="60">60 minutes</option>
+                </select></label
+              ><label
+                >Focus on<select id="focus-task">
+                  <option value="">An open session</option>
+                </select></label
+              >
+              <div class="timer-actions">
+                <button id="timer-toggle" class="primary" type="button">
+                  Start focusing</button
+                ><button id="timer-reset" type="button">Reset</button>
+              </div>
+              <p class="timer-note">
+                Your timer keeps its place when you leave this tab. Come back to
+                see the time remaining.
+              </p>
+            </div>
+            <div class="focus-side">
+              <div class="stat-card">
+                <p class="eyebrow">LAST 7 DAYS</p>
+                <strong id="focus-minutes">0</strong
+                ><span>minutes of completed focus</span>
+              </div>
+              <div class="session-history">
+                <h2>Recent sessions</h2>
+                <div id="session-list"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <footer>
+          Made for a quieter kind of productivity.<span>Open Desk 0.1.0</span>
+        </footer>
+      </main>
+    </div>
+    <noscript
+      ><p>
+        Open Desk needs JavaScript to save links, tasks, and timers. Enable
+        JavaScript to use this workspace.
+      </p></noscript
+    >
+  </body>
+</html>
