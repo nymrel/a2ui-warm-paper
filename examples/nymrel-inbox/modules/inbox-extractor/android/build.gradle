@@ -8,6 +8,8 @@ version = '0.1.0'
 
 android {
   namespace 'com.nymrel.inboxextractor'
+  // AGP 9 only creates unit tests for the selected tested build type.
+  testBuildType 'release'
   defaultConfig {
     versionCode 1
     versionName '0.1.0'
