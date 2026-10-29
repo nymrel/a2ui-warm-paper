@@ -33,6 +33,15 @@ npm start
 
 This is a source release. It is not a hosted service or mobile-store release.
 
+## Nymrel Inbox: native capture and source-linked search
+
+[Nymrel Inbox](examples/nymrel-inbox/README.md) is an MIT-licensed native source
+preview for iOS and Android: notes, links, screenshots, PDFs, and audio originals;
+on-device extraction where supported; ranked local search with source passages;
+encrypted device storage and full-original portable backups. Its native Swift,
+Kotlin, share-extension plugin, tests, and release boundary are included. Physical
+device acceptance, signing, and store publication have their own recorded gates.
+
 ## 🏛️ The Dual-Audience Rule
 
 Every component in `a2ui-warm-paper` adheres to Nymrel's **Dual-Audience Contract**:

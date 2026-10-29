@@ -1,0 +1,14 @@
+node_modules/
+.expo/
+dist-native/
+/android/
+/ios/
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+*.ipa
+*.aab
+*.apk
+.env*
+!*.example

@@ -1,0 +1,20 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'com.nymrel.inboxextractor'
+version = '0.1.0'
+
+android {
+  namespace 'com.nymrel.inboxextractor'
+  defaultConfig {
+    versionCode 1
+    versionName '0.1.0'
+  }
+}
+
+dependencies {
+  // Bundled Latin model: extraction does not request a model download.
+  implementation 'com.google.mlkit:text-recognition:16.0.1'
+}
