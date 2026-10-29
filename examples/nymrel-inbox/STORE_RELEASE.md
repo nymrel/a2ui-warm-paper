@@ -8,7 +8,7 @@ These identifiers are source configuration. Neither store's ownership or availab
 
 **Short description:** A private inbox for notes, screenshots, PDFs, links, and voice recordings.
 
-**Description:** Save what matters and find its source again. Nymrel Inbox keeps captures on your device, searches their text, and shows matching passages with page or audio time references when available. Add notes and tags, find related captures, keep original files, and export password-encrypted backups. Recover deleted captures from Trash before purging them. Supported image/PDF extraction runs locally. Audio transcription availability varies by platform and device; Android audio originals support manual notes in this version.
+**Description:** Save what matters and find its source again. Nymrel Inbox keeps captures on your device, searches their text, and shows matching passages with page or audio time references when available. Add notes and tags, find related captures, keep original files, and export password-encrypted backups. Recover deleted captures from Trash before purging them. Supported image/PDF extraction runs locally. Audio transcription availability varies by platform and device; Android includes a bundled English on-device speech model; supported recordings are indexed locally, with manual notes available when extraction is unsupported.
 
 ## Actual remaining release gates
 

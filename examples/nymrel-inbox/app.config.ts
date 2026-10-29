@@ -77,6 +77,7 @@ const config: ExpoConfig = {
     ],
     ["expo-build-properties", { ios: { deploymentTarget: "16.4" } }],
     "./plugins/with-inbox-sharing.cjs",
+    "./plugins/with-inbox-speech-model.cjs",
   ],
 };
 export default config;

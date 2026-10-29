@@ -23,31 +23,38 @@ import kotlin.math.min
 class InboxExtractorModule : Module() {
   private val executor = Executors.newSingleThreadExecutor()
   private val busy = AtomicBoolean(false)
+  private val destroyed = AtomicBoolean(false)
+  private val lifecycleLock = Any()
+  private var speech: OfflineSpeech? = null
 
   override fun definition() = ModuleDefinition {
     Name("InboxExtractor")
     Function("capabilities") {
+      val context = appContext.reactContext
+      val audio = context != null && OfflineSpeech.bundled(context)
       mapOf(
         "ocr" to true,
         "pdf" to true,
-        "audio" to false,
-        "reason" to "Android audio originals can be saved, but automatic file transcription is unavailable in this release. Add a transcript manually. No cloud fallback is used."
+        "audio" to audio,
+        "reason" to if (audio) "Offline audio transcription uses the bundled US English model for clips up to 2 minutes." else "This build is missing its bundled speech model. Audio originals can be saved with a manual transcript; the app never downloads a model or uses cloud transcription."
       )
     }
     AsyncFunction("extract") { uri: String, mimeType: String, locale: String, promise: Promise ->
-      if (!busy.compareAndSet(false, true)) {
+      if (destroyed.get()) {
+        promise.reject("ERR_INBOX_CLOSED", "The extractor is closed. Reopen the app to try again.", null)
+      } else if (!busy.compareAndSet(false, true)) {
         promise.reject("ERR_INBOX_BUSY", "An extraction is already running. Try again after it finishes.", null)
       } else {
         executor.execute {
-          try { promise.resolve(extractFile(uri, mimeType.lowercase())) }
+          try { promise.resolve(extractFile(uri, mimeType.lowercase(), locale)) }
           catch (error: Exception) { promise.reject("ERR_INBOX_EXTRACTION", error.message ?: "On-device extraction failed. The original can still be saved.", error) }
-          finally { busy.set(false) }
+          finally { synchronized(lifecycleLock) { busy.set(false); if (destroyed.get()) { speech?.close(); speech = null } } }
         }
       }
     }
     AsyncFunction("getSharedItems") { emptyList<Map<String, Any>>() }
     AsyncFunction("acknowledgeShared") { id: String -> Unit }
-    OnDestroy { executor.shutdownNow() }
+    OnDestroy { synchronized(lifecycleLock) { destroyed.set(true); executor.shutdownNow(); if (!busy.get()) { speech?.close(); speech = null } } }
   }
 
   private fun privateFile(uri: String): File {
@@ -61,10 +68,13 @@ class InboxExtractorModule : Module() {
     return file
   }
 
-  private fun extractFile(uri: String, mime: String): Map<String, Any> {
+  private fun extractFile(uri: String, mime: String, locale: String): Map<String, Any> {
     val file = privateFile(uri)
-    require(!mime.startsWith("audio/")) { "Automatic Android audio-file transcription is unavailable in this release. The original can be saved with a manual transcript. No cloud service is used." }
     val context = appContext.reactContext ?: error("The application context is unavailable.")
+    if (mime.startsWith("audio/")) {
+      val engine = speech ?: OfflineSpeech(context).also { speech = it }
+      return engine.transcribe(file, locale)
+    }
     val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
     val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(60)
     val segments = mutableListOf<Map<String, Any>>()

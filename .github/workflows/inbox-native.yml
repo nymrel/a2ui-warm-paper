@@ -34,7 +34,6 @@ jobs:
           package-manager-cache: false
       - run: npm ci --ignore-scripts
       - run: npm run check
-      - run: node --test modules/inbox-extractor/plugin.test.cjs
       - run: npm audit --audit-level=high
       - run: npx expo export --platform ios --platform android --output-dir dist-native
   android:
@@ -53,10 +52,13 @@ jobs:
           distribution: temurin
           java-version: '17'
       - run: npm ci --ignore-scripts
+      - run: npm run prepare:speech-model
       - run: npx expo prebuild --platform android --no-install
-      - run: bash android/gradlew -p android :app:assembleRelease --no-daemon
+      - run: bash android/gradlew -p android :app:assembleRelease :nymrel-inbox-extractor:testReleaseUnitTest --no-daemon
       - name: Verify release has no network permission
         run: node scripts/verify-android-manifest.mjs
+      - name: Verify bundled model and 16 KiB native alignment
+        run: python3 scripts/verify-android-artifact.py
       - name: Retain review build with development signing
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         with:
@@ -79,4 +81,4 @@ jobs:
       - run: npx expo prebuild --platform ios --no-install
       - run: pod install --project-directory=ios
       - name: Compile simulator app and share extension without signing
-        run: xcodebuild -workspace ios/NymrelInbox.xcworkspace -scheme NymrelInbox -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+        run: xcodebuild -workspace ios/NymrelInbox.xcworkspace -scheme NymrelInbox -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' ARCHS=arm64 ONLY_ACTIVE_ARCH=YES CODE_SIGNING_ALLOWED=NO build

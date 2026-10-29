@@ -10,7 +10,11 @@ The extractor accepts only copied files inside the main app's private sandbox, w
 
 On iOS, audio transcription requires both system speech authorization and `supportsOnDeviceRecognition` for the requested locale. Requests set `requiresOnDeviceRecognition = true`. Audio is limited to 2 minutes and recognition times out after 90 seconds. Unsupported languages, denied permission, unreadable files and recognition errors do not trigger a network fallback.
 
-Android audio originals remain capturable but automatic audio-file transcription is unavailable in this release. The platform's imported-audio extra may be ignored by a recognition service, so this adapter does not invoke it or silently open the microphone. A separate, reviewed bundled model adapter can add reliable Android file transcription later.
+Android file transcription uses Vosk 0.3.75, JNA 5.18.1, and the bundled `vosk-model-small-en-us-0.15` model. It currently accepts US English mono/stereo audio up to 2 minutes, sampled between 8 and 48 kHz. Android's local MediaExtractor/MediaCodec decodes supported file codecs to PCM16; the extractor downmixes and streams a linear resample to 16 kHz without retaining the complete decoded file. Unsupported codecs/PCM formats reject with an actionable error and keep the original. The implementation does not use Android's recognition intents or open the microphone for imported-file transcription.
+
+Run `node scripts/prepare-speech-model.mjs` before Android prebuild, or pass `--source /path/to/vosk-model-small-en-us-0.15.zip` to reuse a local download. The helper accepts only the pinned SHA-256 in `speech-model.json`; it bounds downloads to 80 MiB and commits the ZIP atomically. The config plugin copies the verified ZIP into the APK's assets. The app performs no model download. Its first transcription verifies the bundled ZIP again, unpacks it within a 100 MiB / 128-entry private staging directory with canonical path checks, and commits the model only after required files are present. The model is excluded from Android backup storage.
+
+The ZIP and generated native directories are build assets, not committed source. The official model URL, exact digest and license remain in the source manifest. See [third-party notices](third-party/NOTICE.md) for model/library attribution and artifact inspection evidence. The build plugin also copies the Apache license and speech-component notices into Android assets. The bundled model adds approximately 40 MiB compressed and about 68 MiB extracted; actual native runtime memory and recognition quality require device measurement.
 
 Google documents that ML Kit processes recognition inputs on the device, but its SDK also has diagnostic/application/device data-disclosure requirements. Bundling the OCR model does not by itself establish that the complete Android app sends no telemetry. Use the final merged manifest, network observation and [Google's disclosure guidance](https://developers.google.com/ml-kit/android-data-disclosure) when completing the Play Data Safety form. Do not declare a device-tested privacy outcome from this source alone.
 
@@ -24,7 +28,7 @@ Each staged capture has a separate atomic metadata file and private attachment i
 
 ## Verification boundary
 
-Expo prebuild/autolinking and JavaScript type checking can validate the integration configuration. They do not compile, sign or exercise Swift/Kotlin recognition, App Group permissions, OS share sheets, language-model availability, or real phone input. Those require Xcode/Android builds and device acceptance before a store-ready claim.
+Expo prebuild/autolinking and JavaScript type checking can validate the integration configuration. The share-plugin and speech-model helper tests run with Node. `MonoResamplerTest` exercises the actual Kotlin streaming resampler through the Android module's JVM unit-test task. Those checks do not prove speech-recognition quality, App Group permissions, OS share sheets, or real phone input. Xcode/Android builds and device acceptance remain necessary before a store-ready claim.
 
 ## Primary implementation references
 

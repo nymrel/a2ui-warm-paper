@@ -12,3 +12,8 @@ dist-native/
 *.apk
 .env*
 !*.example
+
+/assets/*.zip
+
+__pycache__/
+*.pyc

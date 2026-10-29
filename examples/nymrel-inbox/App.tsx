@@ -251,7 +251,11 @@ function Inbox() {
   const voiceRef = useRef(voiceStage);
   const voiceStartedAt = useRef(0);
   const draftFor = useRef<string | null>(null);
-  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const recorder = useAudioRecorder({
+    ...RecordingPresets.HIGH_QUALITY,
+    sampleRate: 16000,
+    numberOfChannels: 1,
+  });
   const recorderState = useAudioRecorderState(recorder, 250);
 
   const refresh = useCallback(async () => {

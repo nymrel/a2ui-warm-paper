@@ -38,14 +38,15 @@
   },
   "scripts": {
     "start": "expo start",
-    "android": "expo run:android",
+    "android": "npm run prepare:speech-model && expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "node --experimental-strip-types --test src/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm test && node --test modules/inbox-extractor/plugin.test.cjs",
-    "prebuild": "expo prebuild --no-install",
-    "export": "expo export --platform ios --platform android --output-dir dist-native"
+    "check": "npm run typecheck && npm test && node --test modules/inbox-extractor/*.test.cjs",
+    "prebuild": "npm run prepare:speech-model && expo prebuild --no-install",
+    "export": "expo export --platform ios --platform android --output-dir dist-native",
+    "prepare:speech-model": "node scripts/prepare-speech-model.mjs"
   },
   "private": true,
   "type": "module",

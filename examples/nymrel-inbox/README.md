@@ -9,11 +9,11 @@ Save notes, links, screenshots, PDFs, and voice recordings. Search locally and s
 - Native React Native/Expo application with Library, Capture, Your Data, and recoverable Trash.
 - On-device ranked text search, small explicit synonym expansion, deterministic tag suggestions, related captures, and highlighted source passages. This is lexical retrieval, not an evaluated semantic embedding model.
 - iOS Vision OCR, PDFKit text extraction with OCR fallback, and support-gated on-device Speech transcription. PDF indexing is bounded to 20 pages; iOS audio extraction accepts recordings up to 120 seconds and requires a locally supported English recognizer.
-- Android bundled Latin-script ML Kit OCR and PDF page rendering/OCR. Automatic Android audio-file transcription is unavailable in this version; audio originals and manual notes remain usable.
+- Android bundled Latin-script ML Kit OCR, PDF page rendering/OCR, and Vosk English audio-file transcription with word time references. The speech model is prepared and verified at build time, bundled in the APK, and unpacked locally with strict limits; app network access is not required. Audio extraction is bounded to 120 seconds and supported PCM16-decodable formats.
 - iOS share extension that saves into an App Group and completes normally. It does not launch the main app. Open Inbox to import pending captures. Android receives raw share intents; URL metadata is never fetched.
 - SQLCipher device database, random master key in SecureStore, AES-256-GCM attachment encryption, and password-encrypted full-original backups. Missing SQLCipher causes an explicit refusal rather than an unencrypted fallback.
 - Backup validation before writes; transactional merge, preserved existing IDs, content/URL deduplication, checksum verification, and rollback cleanup.
-- An optional model-adapter interface. No model client, cloud inference, account, advertising, or analytics integration is shipped. External adapters are not enabled by this release.
+- An optional model-adapter interface. No remote model client, cloud inference, account, advertising, or analytics integration is shipped. External adapters are not enabled by this release.
 
 Reuse from Open Desk includes URL normalization that retains functional query bytes and obvious signed URLs, deterministic deduplication, bounded portable schemas, and recovery-oriented UI patterns. Original source files and tests are included.
 
@@ -25,6 +25,7 @@ Use Node **24.20+ within 24.x**, npm, and the platform's native development envi
 git clone https://github.com/nymrel/a2ui-warm-paper.git
 cd a2ui-warm-paper/examples/nymrel-inbox
 npm ci --ignore-scripts
+npm run prepare:speech-model # downloads the pinned Apache-2.0 English model at build time
 npm run check
 npm run prebuild
 npm run ios       # macOS with Xcode and CocoaPods
@@ -33,7 +34,7 @@ npm run android   # Android SDK and JDK 17
 
 Expo Go cannot run this app's encryption and custom native extraction modules. Native project directories are generated and ignored; **the local module's Swift, Kotlin, podspec, and Gradle files are tracked**. Android production network permissions are blocked, so a normal Metro network development session needs a separately reviewed development configuration; the packaged review build includes its JS bundle.
 
-`npm run export` validates native JavaScript bundling. The repository's Inbox workflow additionally attempts Android review compilation, release-manifest network checks, and unsigned iOS simulator compilation. A generated project or exported JS bundle alone does not establish a compiled native application, successful device extraction, signing, or store acceptance. Read the actual workflow results for this revision.
+`npm run export` validates native JavaScript bundling. The repository's Inbox workflow additionally attempts Android review compilation, release-manifest network checks, and unsigned iOS simulator compilation. A generated project or exported JS bundle alone does not establish a compiled native application, successful device extraction, signing, or store acceptance. Read the actual workflow results for this revision. Android review validation also checks the pinned bundled model, 16 KiB alignment of 64-bit ELF libraries, APK page alignment, and PCM resampling unit tests.
 
 ## Data and recovery
 
@@ -59,4 +60,4 @@ The Expo toolchain's Zod dependency is pinned to patched 4.6.7 through an overri
 - [Android bundled text recognition](https://developers.google.com/ml-kit/vision/text-recognition/v2/android)
 - [ML Kit Android data disclosures](https://developers.google.com/ml-kit/android-data-disclosure)
 
-MIT, copyright 2026 Nymrel / JalenBuilds LLC. See [LICENSE](LICENSE).
+Application code: MIT, copyright 2026 Nymrel / JalenBuilds LLC. See [LICENSE](LICENSE). Vosk/JNA/model components retain their own licenses; see [third-party notices](modules/inbox-extractor/third-party/NOTICE.md).
