@@ -1,0 +1,19 @@
+{
+  "name": "Open Desk by Nymrel",
+  "short_name": "Open Desk",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf8f2",
+  "theme_color": "#2a332e",
+  "description": "Your offline library, task board, and focus timer.",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
