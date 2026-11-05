@@ -1,10 +1,13 @@
 const assert = require('node:assert/strict');
+const React = require('react');
+const { renderToStaticMarkup } = require('react-dom/server');
 
 const {
   applyStreamDelta,
   cleanRawJSON,
   parseA2UI,
   validateA2UIPayload,
+  A2UIRenderer,
   warmPaperTokens,
 } = require('../dist/index.js');
 
@@ -54,6 +57,40 @@ const progress = {
   title: 'Build',
   steps: [{ id: 'compile', title: 'Compile', status: 'running' }],
 };
+
+// Malformed stream data must reach the renderer's schema fallback rather than
+// throwing while the progress component reads step.status or maps subSteps.
+for (const type of ['progress_tracker', 'progress']) {
+  for (const steps of [
+    [null],
+    [42],
+    [[]],
+    [{ id: 'build', title: {}, status: 'running' }],
+    [{ id: 'build', title: 'Build', status: 'unknown' }],
+    [{ id: 'build', title: 'Build', status: 'running', subSteps: {} }],
+    [{ id: 'build', title: 'Build', status: 'running', subSteps: [null] }],
+  ]) {
+    const malformed = { ...progress, type, steps };
+    assert.equal(validateA2UIPayload(malformed).valid, false);
+    assert.equal(parseA2UI(JSON.stringify(malformed)).valid, false);
+    for (const data of [malformed, JSON.stringify(malformed)]) {
+      assert.match(
+        renderToStaticMarkup(React.createElement(A2UIRenderer, { data })),
+        /A2UI Payload Schema Error/,
+      );
+    }
+  }
+  const valid = { ...progress, type, steps: [{
+    id: 'compile', title: 'Compile', status: 'running',
+    subSteps: [{ id: 'parse', title: 'Parse', status: 'completed' }],
+  }] };
+  assert.equal(validateA2UIPayload(valid).valid, true);
+  assert.match(renderToStaticMarkup(React.createElement(A2UIRenderer, { data: valid })), /Compile/);
+  assert.equal(validateA2UIPayload({ ...progress, type, steps: [] }).valid, true);
+  assert.equal(validateA2UIPayload({
+    ...progress, type, steps: [{ ...progress.steps[0], subSteps: undefined }],
+  }).valid, true);
+}
 
 const updated = applyStreamDelta(progress, {
   op: 'set',
