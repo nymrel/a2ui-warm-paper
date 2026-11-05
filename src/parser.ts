@@ -178,7 +178,9 @@ export function validateA2UIPayload(data: unknown): A2UIParseResult {
       } else {
         const statuses = ['pending', 'running', 'completed', 'failed', 'waiting_for_human', 'skipped'];
         const subStatuses = ['pending', 'running', 'completed', 'failed'];
-        const validateStep = (step: unknown, label: string, allowedStatuses: string[]) => {
+        const validateStep = (
+          step: unknown, label: string, allowedStatuses: string[], optionalText: string[] = [],
+        ) => {
           if (!step || typeof step !== 'object' || Array.isArray(step)) {
             errors.push(`${label} must be an object.`);
             return;
@@ -192,10 +194,19 @@ export function validateA2UIPayload(data: unknown): A2UIParseResult {
           if (typeof item['status'] !== 'string' || !allowedStatuses.includes(item['status'])) {
             errors.push(`${label} has an invalid 'status'.`);
           }
+          for (const key of optionalText) {
+            if (item[key] !== undefined && typeof item[key] !== 'string') {
+              errors.push(`${label} requires '${key}' to be a string when provided.`);
+            }
+          }
+          const duration = item['durationMs'];
+          if (duration !== undefined && (typeof duration !== 'number' || !Number.isFinite(duration) || duration < 0)) {
+            errors.push(`${label} requires a finite, non-negative 'durationMs' when provided.`);
+          }
         };
         obj['steps'].forEach((step: unknown, index: number) => {
           const label = `Progress step at index ${index}`;
-          validateStep(step, label, statuses);
+          validateStep(step, label, statuses, ['description', 'errorDetails']);
           if (step && typeof step === 'object' && !Array.isArray(step) && 'subSteps' in step && step.subSteps !== undefined) {
             if (!Array.isArray(step.subSteps)) {
               errors.push(`${label} requires 'subSteps' to be an array when provided.`);

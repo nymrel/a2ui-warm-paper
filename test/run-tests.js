@@ -67,8 +67,17 @@ for (const type of ['progress_tracker', 'progress']) {
     [[]],
     [{ id: 'build', title: {}, status: 'running' }],
     [{ id: 'build', title: 'Build', status: 'unknown' }],
+    [{ id: 'build', title: 'Build', status: 'running', description: {} }],
+    [{ id: 'build', title: 'Build', status: 'running', errorDetails: {} }],
+    [{ id: 'build', title: 'Build', status: 'running', durationMs: 'not-a-number' }],
+    [{ id: 'build', title: 'Build', status: 'running', durationMs: NaN }],
+    [{ id: 'build', title: 'Build', status: 'running', durationMs: Infinity }],
+    [{ id: 'build', title: 'Build', status: 'running', durationMs: -1 }],
     [{ id: 'build', title: 'Build', status: 'running', subSteps: {} }],
     [{ id: 'build', title: 'Build', status: 'running', subSteps: [null] }],
+    [{ id: 'build', title: 'Build', status: 'running', subSteps: [{
+      id: 'parse', title: 'Parse', status: 'pending', durationMs: -1,
+    }] }],
   ]) {
     const malformed = { ...progress, type, steps };
     assert.equal(validateA2UIPayload(malformed).valid, false);
@@ -81,14 +90,18 @@ for (const type of ['progress_tracker', 'progress']) {
     }
   }
   const valid = { ...progress, type, steps: [{
-    id: 'compile', title: 'Compile', status: 'running',
-    subSteps: [{ id: 'parse', title: 'Parse', status: 'completed' }],
+    id: 'compile', title: 'Compile', status: 'running', durationMs: 0,
+    description: 'Synthetic build', errorDetails: '',
+    subSteps: [{ id: 'parse', title: 'Parse', status: 'completed', durationMs: 1000 }],
   }] };
   assert.equal(validateA2UIPayload(valid).valid, true);
   assert.match(renderToStaticMarkup(React.createElement(A2UIRenderer, { data: valid })), /Compile/);
   assert.equal(validateA2UIPayload({ ...progress, type, steps: [] }).valid, true);
   assert.equal(validateA2UIPayload({
-    ...progress, type, steps: [{ ...progress.steps[0], subSteps: undefined }],
+    ...progress, type, steps: [{
+      ...progress.steps[0], subSteps: undefined, description: undefined,
+      errorDetails: undefined, durationMs: undefined,
+    }],
   }).valid, true);
 }
 
