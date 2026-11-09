@@ -15,6 +15,12 @@ Built around **Nymrel's signature Warm Paper design aesthetic**, it delivers war
 
 ---
 
+## Choose your path
+
+- **Use a workspace:** start with [Open Desk](examples/open-desk/README.md) for links, tasks and focus. Its standalone example needs no React setup or account. [Nymrel Inbox](examples/nymrel-inbox/README.md) is a separate native source preview with its own device and release requirements.
+- **Build an interface:** follow [source installation](#-installation), then inspect the renderer and component examples below. The React library is not yet published to npm.
+- **Connect an agent:** start with [the payload guide](llms.txt), [`src/types.ts`](src/types.ts) and [`src/parser.ts`](src/parser.ts). Emit only supported local payloads and handle validation errors before rendering. Upstream A2UI compatibility is unverified; a rendered approval control does not itself authorize a tool action.
+
 ## Open Desk: three original productivity tools
 
 [Open Desk](examples/open-desk/README.md) is a standalone MIT-licensed example
