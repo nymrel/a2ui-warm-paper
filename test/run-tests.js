@@ -62,6 +62,7 @@ const progress = {
 // throwing while the progress component reads step.status or maps subSteps.
 for (const type of ['progress_tracker', 'progress']) {
   for (const steps of [
+    new Array(1),
     [null],
     [42],
     [[]],
@@ -74,6 +75,7 @@ for (const type of ['progress_tracker', 'progress']) {
     [{ id: 'build', title: 'Build', status: 'running', durationMs: Infinity }],
     [{ id: 'build', title: 'Build', status: 'running', durationMs: -1 }],
     [{ id: 'build', title: 'Build', status: 'running', subSteps: {} }],
+    [{ id: 'build', title: 'Build', status: 'running', subSteps: new Array(1) }],
     [{ id: 'build', title: 'Build', status: 'running', subSteps: [null] }],
     [{ id: 'build', title: 'Build', status: 'running', subSteps: [{
       id: 'parse', title: 'Parse', status: 'pending', durationMs: -1,

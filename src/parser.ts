@@ -175,6 +175,8 @@ export function validateA2UIPayload(data: unknown): A2UIParseResult {
       }
       if (!Array.isArray(obj['steps'])) {
         errors.push("Progress tracker requires a 'steps' array.");
+      } else if (obj['steps'].includes(undefined)) {
+        errors.push('Progress steps must not contain missing entries.');
       } else {
         const statuses = ['pending', 'running', 'completed', 'failed', 'waiting_for_human', 'skipped'];
         const subStatuses = ['pending', 'running', 'completed', 'failed'];
@@ -210,6 +212,8 @@ export function validateA2UIPayload(data: unknown): A2UIParseResult {
           if (step && typeof step === 'object' && !Array.isArray(step) && 'subSteps' in step && step.subSteps !== undefined) {
             if (!Array.isArray(step.subSteps)) {
               errors.push(`${label} requires 'subSteps' to be an array when provided.`);
+            } else if (step.subSteps.includes(undefined)) {
+              errors.push(`${label} sub-steps must not contain missing entries.`);
             } else {
               step.subSteps.forEach((subStep: unknown, subIndex: number) => {
                 validateStep(subStep, `${label}, sub-step at index ${subIndex}`, subStatuses);
